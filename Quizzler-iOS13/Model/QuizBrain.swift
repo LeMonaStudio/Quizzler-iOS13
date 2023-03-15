@@ -1,23 +1,16 @@
 //
-//  ViewController.swift
+//  QuizBrain.swift
 //  Quizzler-iOS13
 //
-//  Created by Angela Yu on 12/07/2019.
-//  Copyright © 2019 The App Brewery. All rights reserved.
+//  Created by Musa Lawrence on 3/14/23.
+//  Copyright © 2023 The App Brewery. All rights reserved.
 //
 
+import Foundation
 import UIKit
 
-class ViewController: UIViewController {
-    
-    @IBOutlet weak var questionText: UILabel!
-    
-    @IBOutlet weak var progressView: UIProgressView!
-    
-    @IBOutlet weak var treuButton: UIButton!
-    
-    @IBOutlet weak var falseButton: UIButton!
-    
+
+struct QuizBrain{
     let quiz = [Question(q: "A slug's blood is green.", a: "True"),
                 Question(q: "Approximately one quarter of human bones are in the feet.", a: "True"),
                 Question(q: "The total surface area of two human lungs is approximately 70 square metres.", a: "True"),
@@ -31,40 +24,36 @@ class ViewController: UIViewController {
                 Question(q: "No piece of square dry paper can be folded in half more than 7 times.", a: "False"),
                 Question(q: "Chocolate affects a dog's heart and nervous system; a few ounces are enough to kill a small dog.", a: "True")
     ]
-    
     var questionNumber = 0
+    var progress = Float()
+    var currentScore = 0
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        updateUI()
-    }
 
-     
-    @IBAction func answerButtonPressed(_ sender: UIButton) {
-        let userAnswer = sender.currentTitle
-        let actualAnswer = quiz[questionNumber].answer
-        
-        if userAnswer == actualAnswer {
-            sender.backgroundColor = UIColor.green
-        }else {
-            sender.backgroundColor = UIColor.red
+    mutating func checkAnswerForUIUpdate(_ userAnswer: String) -> UIColor {
+        if (userAnswer == quiz[questionNumber].answer){
+            currentScore += 1
+            return UIColor.green
         }
-        
+        return UIColor.red
+    }
+    
+    func getCurrentQuestionText() -> String {
+        return quiz[questionNumber].text
+    }
+    
+    func getProgress() -> Float {
+        return Float(questionNumber + 1) / Float(quiz.count)
+    }
+    
+    mutating func nextQuestion() {
         questionNumber += 1
         if (!(questionNumber <= quiz.count - 1)){
             questionNumber = 0
+            currentScore = 0
         }
-        
-        Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: #selector(updateUI), userInfo: nil, repeats: false)
     }
     
-    
-    @objc func updateUI(){
-        questionText.text = quiz[questionNumber].text
-        progressView.progress = Float(questionNumber + 1) / Float(quiz.count)
-        treuButton.backgroundColor = UIColor.clear
-        falseButton.backgroundColor = UIColor.clear
+    func getCurrentScore() -> Int {
+        return currentScore
     }
-    
 }
-
