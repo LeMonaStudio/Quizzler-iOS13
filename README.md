@@ -1,13 +1,4 @@
-
-![App Brewery Banner](Documentation/AppBreweryBanner.png)
-
-#  Quizzler
-
-## Our Goal
-
-The goal of this tutorial is to take you one step further in your journey of becoming an app developer. We are going to introduce you to the holy grail of mobile design patterns: the Model View Controller (MVC) pattern. A design pattern is simply a repeatable and optimised solution to a common software problem and you’ll learn more about this when use in the tutorial.
-
-## What you will create
+## The App
 
 You will program a trivia quiz app. If you have another field of expertise such as law or medicine, you’ll be glad to know that multiple choice question apps are one of the most popular types of educational apps on the App Store! 
 
@@ -131,8 +122,100 @@ struct QuizBrain{
 https://user-images.githubusercontent.com/34939672/225242472-11d2ce74-c8ea-4020-9077-7adb659394c2.mov
 
 </br>
+
+### Optional Challenge
+As optional challenge that was given in this code lab, I change the code to display multiple-choice questions and validate user answer with the UI
+to show if the user is right or wrong, just like the True/False version.
+
+First, I updated the Question struct to accomodate the new multiple-choice questions and then added the questions to the quiz array in the QuizBrain
+struct.
+
+```swift
+//Before
+struct Question {
+    let text: String
+    let answer: String
+    
+    init(q: String, a: String) {
+        text = q
+        answer = a
+    }
+}
+
+//Now
+struct Question {
+    let text: String
+    let answer: [String]
+    let correctAnswer: String
+    
+    init(q: String, a: [String], c: String) {
+        text = q
+        answer = a
+        correctAnswer = c
+    }
+}
+```
+
+```swift
+let quiz = [
+        Question(q: "Which is the largest organ in the human body?", a: ["Heart", "Skin", "Large Intestine"], c: "Skin"),
+        Question(q: "Five dollars is worth how many nickels?", a: ["25", "50", "100"], c: "100"),
+        Question(q: "What do the letters in the GMT time zone stand for?", a: ["Global Meridian Time", "Greenwich Mean Time", "General Median Time"], c: "Greenwich Mean Time"),
+        Question(q: "What is the French word for 'hat'?", a: ["Chapeau", "Écharpe", "Bonnet"], c: "Chapeau"),
+        Question(q: "In past times, what would a gentleman keep in his fob pocket?", a: ["Notebook", "Handkerchief", "Watch"], c: "Watch"),
+        Question(q: "How would one say goodbye in Spanish?", a: ["Au Revoir", "Adiós", "Salir"], c: "Adiós"),
+        Question(q: "Which of these colours is NOT featured in the logo for Google?", a: ["Green", "Orange", "Blue"], c: "Orange"),
+        Question(q: "What alcoholic drink is made from molasses?", a: ["Rum", "Whisky", "Gin"], c: "Rum"),
+        Question(q: "What type of animal was Harambe?", a: ["Panda", "Gorilla", "Crocodile"], c: "Gorilla"),
+        Question(q: "Where is Tasmania located?", a: ["Indonesia", "Australia", "Scotland"], c: "Australia")
+]
+```
+
+Then, I added a method in the QuizBrain struct to return the possible answers (.ie options) for the three buttons added to the view. When the updateUI() function is called, each of the button's title will be changed to the display the options as the question changes.
+
+```swift
+func getAnswerOptions(option: Int) -> String {
+        return quiz[questionNumber].answer[option - 1]
+}
+```
+
+```swift
+buttonA.setTitle(quizBrain.getAnswerOptions(option: 1), for: .normal)
+buttonB.setTitle(quizBrain.getAnswerOptions(option: 2), for: .normal)
+buttonC.setTitle(quizBrain.getAnswerOptions(option: 3), for: .normal)
+```
+Finally, I updated the QuizBrain struct's checkAnswerForUIUpdate() method to check the if the user's selection is right or wrong.
+
+```swift
+//Before
+mutating func checkAnswerForUIUpdate(_ userAnswer: String) -> UIColor {
+        if (userAnswer == quiz[questionNumber].answer){
+            currentScore += 1
+            return UIColor.green
+        }
+        return UIColor.red
+}
+ 
+//Now
+mutating func checkAnswerForUIUpdate(_ userAnswer: String) -> UIColor {
+        if (userAnswer == quiz[questionNumber].correctAnswer){
+            currentScore += 1
+            return UIColor.green
+        }
+        return UIColor.red
+}
+```
+
 </br>
 
+https://user-images.githubusercontent.com/34939672/225590995-5cbcc96b-09cc-4a13-9e9f-d2353955044f.mov
+
+
+### What's Next?
+As I progress with my learning journey, I would love to update this mini project to be able to fetch quiz questions from a remote database, cache the questions in a local database and display in the app for users. I know it's a gradual process and I'm sure I'll get there 💪🏾💪🏾💪🏾.
+
+</br>
+</br>
 >This is a companion project to The App Brewery's Complete App Development Bootcamp, check out the full course at [www.appbrewery.co](https://www.appbrewery.co/)
 
 ![End Banner](Documentation/readme-end-banner.png)
